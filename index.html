@@ -137,10 +137,33 @@ input:focus::placeholder {
     background: #dc3545;
     color: rgb(255, 255, 255);
 }
+.logo {
+            position: fixed;
+            top: 10px;
+            left: 10px;
+            width: 0;
+            height: 0;
+            border-left: 30px solid transparent;
+            border-right: 30px solid transparent;
+            border-bottom: 30px solid rgb(0, 0, 0);
+        }
+
+        .logo::before {
+            content: "";
+            position: absolute;
+            top: 10px;
+            left: -15px;
+            width: 0;
+            height: 0;
+            border-left: 15px solid transparent;
+            border-right: 15px solid transparent;
+            border-bottom: 25px solid white;
+        }
 
     </style>
 </head>
 <body>
+    <div class="logo"></div>
     <div class="container" id="start-container">
         <h1>Welcome to the Quiz</h1>
         <p>Enter your Player Number to begin:</p>
@@ -221,14 +244,18 @@ function checkPreviousAttempt() {
 }
 checkPreviousAttempt();
 
+const allowedNumbers = [456, 7, 18, 31, 42, 58, 74, 87, 101, 115, 129, 143, 157, 170, 184, 197, 212, 226, 241, 255, 268, 283, 296, 310, 325, 338, 352, 366, 380]; // Allowed player numbers
+
 function startQuiz() {
-    let playerName = document.getElementById("teamName").value.trim();
-    if (!playerName) {
-        alert("🚨 Please enter your Player Number.");
+    let playerNumber = parseInt(document.getElementById("teamName").value.trim(), 10);
+
+    if (isNaN(playerNumber) || !allowedNumbers.includes(playerNumber)) {
+        alert("🚨 Invalid Player Number. Please enter a valid assigned number.");
         return;
     }
-    localStorage.setItem(storageKey + "teamName", playerName);
-    document.getElementById("teamDisplay").textContent = "Player Number: " + playerName;
+
+    localStorage.setItem(storageKey + "teamName", playerNumber);
+    document.getElementById("teamDisplay").textContent = "Player Number: " + playerNumber;
     document.getElementById("start-container").style.display = "none";
     document.getElementById("quiz-container").style.display = "flex";
 
@@ -246,6 +273,7 @@ function startQuiz() {
     window.addEventListener('blur', checkBlur);
     window.addEventListener("resize", checkScreenSize);
 }
+
 
 function updateTimer() {
     let elapsed = Math.floor((Date.now() - startTime) / 1000);
@@ -323,7 +351,7 @@ function submitQuiz() {
 function displayResults(results) {
     document.body.innerHTML = `
         <div style="max-width: 500px; margin: auto; padding: 20px; text-align: center; background: #222; color: white; border-radius: 10px; box-shadow: 0 0 10px rgba(0,0,0,0.5);">
-            <h2>🎉 Quiz Completed</h2>
+            <h2>🎉 Triangle Quiz Completed</h2>
             <p><strong>Player Number:</strong> ${results.teamName}</p>
             <hr style="border: 0; height: 1px; background: #555; margin: 10px 0;">
             <p><strong>Total Questions:</strong> ${results.totalQuestions}</p>
